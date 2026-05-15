@@ -95,9 +95,9 @@ export async function getDepartments() {
   const supabase = await createServerSupabaseClient();
   const { data, error } = await supabase
     .from("departments")
-    .select("id,code,name")
+    .select("id,code,name,slug,sort_order")
     .eq("is_active", true)
-    .order("name", { ascending: true });
+    .order("sort_order", { ascending: true });
 
   if (error || !data) {
     return [];
