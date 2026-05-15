@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import type { JobStatus } from "@/lib/domain";
 import { jobSchema } from "@/lib/validations/job";
 
 // ---------------------------------------------------------------------------
@@ -189,7 +190,7 @@ export async function updateJobAction(id: string, formData: FormData) {
 // updateJobStatusAction
 // ---------------------------------------------------------------------------
 
-export async function updateJobStatusAction(id: string, status: string) {
+export async function updateJobStatusAction(id: string, status: JobStatus) {
   const { user, error: authError } = await requireAdmin();
   if (authError || !user) {
     return { error: authError ?? "Unauthorized" };
@@ -209,19 +210,19 @@ export async function updateJobStatusAction(id: string, status: string) {
   }
 
   const updateData = {
-    status: status as typeof current.status,
+    status: status,
     updated_by: user.id,
     published_at: current.published_at || null,
     closed_at: current.closed_at || null,
   };
 
-  // Set published_at if changing to 'active'
-  if (status === "active") {
+  // Set published_at only if transitioning to 'active'
+  if (status === "active" && current.status !== "active") {
     updateData.published_at = now;
   }
 
-  // Set closed_at if changing to 'closed'
-  if (status === "closed") {
+  // Set closed_at only if transitioning to 'closed'
+  if (status === "closed" && current.status !== "closed") {
     updateData.closed_at = now;
   }
 
