@@ -58,6 +58,7 @@ export async function createJobAction(formData: FormData) {
 
   const data = parsed.data;
   const admin = createAdminSupabaseClient();
+  const now = new Date().toISOString();
 
   const { data: job, error: insertError } = await admin
     .from("jobs")
@@ -73,6 +74,9 @@ export async function createJobAction(formData: FormData) {
       benefits: data.benefits,
       status: data.status,
       deadline: data.deadline || null,
+      published_at: data.status === "active" ? now : null,
+      created_by: user.id,
+      updated_by: user.id,
     })
     .select("id")
     .single();
@@ -84,6 +88,8 @@ export async function createJobAction(formData: FormData) {
   await admin.from("activity_logs").insert({
     admin_id: user.id,
     action: "job_created",
+    entity_type: "job",
+    entity_id: job.id,
     metadata: { job_id: job.id, title: data.title },
   });
 
@@ -113,10 +119,11 @@ export async function updateJobAction(id: string, formData: FormData) {
 
   const data = parsed.data;
   const admin = createAdminSupabaseClient();
+  const now = new Date().toISOString();
 
   const { data: current, error: fetchError } = await admin
     .from("jobs")
-    .select("id, status")
+    .select("id, status, published_at, closed_at")
     .eq("id", id)
     .single();
 
@@ -124,21 +131,36 @@ export async function updateJobAction(id: string, formData: FormData) {
     return { error: fetchError?.message ?? "Job not found" };
   }
 
+  const updateData = {
+    title: data.title,
+    slug: data.slug,
+    department_id: data.departmentId,
+    employment_type: data.employmentType,
+    location: data.location,
+    description: data.description,
+    responsibilities: data.responsibilities,
+    requirements: data.requirements,
+    benefits: data.benefits,
+    status: data.status,
+    deadline: data.deadline || null,
+    updated_by: user.id,
+    published_at: current.published_at || null,
+    closed_at: current.closed_at || null,
+  };
+
+  // Set published_at only if transitioning to 'active' for the first time
+  if (data.status === "active" && current.status !== "active") {
+    updateData.published_at = now;
+  }
+
+  // Set closed_at only if transitioning to 'closed'
+  if (data.status === "closed" && current.status !== "closed") {
+    updateData.closed_at = now;
+  }
+
   const { error: updateError } = await admin
     .from("jobs")
-    .update({
-      title: data.title,
-      slug: data.slug,
-      department_id: data.departmentId,
-      employment_type: data.employmentType,
-      location: data.location,
-      description: data.description,
-      responsibilities: data.responsibilities,
-      requirements: data.requirements,
-      benefits: data.benefits,
-      status: data.status,
-      deadline: data.deadline || null,
-    })
+    .update(updateData)
     .eq("id", id);
 
   if (updateError) {
@@ -148,6 +170,8 @@ export async function updateJobAction(id: string, formData: FormData) {
   await admin.from("activity_logs").insert({
     admin_id: user.id,
     action: "job_updated",
+    entity_type: "job",
+    entity_id: id,
     metadata: {
       job_id: id,
       title: data.title,
@@ -172,10 +196,11 @@ export async function updateJobStatusAction(id: string, status: string) {
   }
 
   const admin = createAdminSupabaseClient();
+  const now = new Date().toISOString();
 
   const { data: current, error: fetchError } = await admin
     .from("jobs")
-    .select("id, status")
+    .select("id, status, published_at, closed_at")
     .eq("id", id)
     .single();
 
@@ -183,9 +208,26 @@ export async function updateJobStatusAction(id: string, status: string) {
     return { error: fetchError?.message ?? "Job not found" };
   }
 
+  const updateData = {
+    status: status as typeof current.status,
+    updated_by: user.id,
+    published_at: current.published_at || null,
+    closed_at: current.closed_at || null,
+  };
+
+  // Set published_at if changing to 'active'
+  if (status === "active") {
+    updateData.published_at = now;
+  }
+
+  // Set closed_at if changing to 'closed'
+  if (status === "closed") {
+    updateData.closed_at = now;
+  }
+
   const { error: updateError } = await admin
     .from("jobs")
-    .update({ status: status as typeof current.status })
+    .update(updateData)
     .eq("id", id);
 
   if (updateError) {
@@ -195,6 +237,8 @@ export async function updateJobStatusAction(id: string, status: string) {
   await admin.from("activity_logs").insert({
     admin_id: user.id,
     action: "job_status_changed",
+    entity_type: "job",
+    entity_id: id,
     metadata: {
       job_id: id,
       from_status: current.status,

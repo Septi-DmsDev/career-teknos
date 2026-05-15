@@ -77,6 +77,10 @@ export type Database = {
           deadline: string | null;
           created_at: string;
           updated_at: string;
+          published_at: string | null;
+          closed_at: string | null;
+          created_by: string | null;
+          updated_by: string | null;
         },
         {
           id?: string;
@@ -93,6 +97,10 @@ export type Database = {
           deadline?: string | null;
           created_at?: string;
           updated_at?: string;
+          published_at?: string | null;
+          closed_at?: string | null;
+          created_by?: string | null;
+          updated_by?: string | null;
         }
       >;
       applicants: Table<
@@ -225,6 +233,8 @@ export type Database = {
           id: string;
           admin_id: string | null;
           action: string;
+          entity_type: string | null;
+          entity_id: string | null;
           metadata: Json;
           created_at: string;
         },
@@ -232,6 +242,8 @@ export type Database = {
           id?: string;
           admin_id?: string | null;
           action: string;
+          entity_type?: string | null;
+          entity_id?: string | null;
           metadata?: Json;
           created_at?: string;
         },

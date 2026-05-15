@@ -48,7 +48,11 @@ create table public.jobs (
   status public.job_status not null default 'draft',
   deadline date,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  published_at timestamptz,
+  closed_at timestamptz,
+  created_by uuid references auth.users(id),
+  updated_by uuid references auth.users(id)
 );
 
 create table public.applicants (
@@ -112,6 +116,8 @@ create table public.activity_logs (
   id uuid primary key default gen_random_uuid(),
   admin_id uuid references public.admin_profiles(id),
   action text not null,
+  entity_type text,
+  entity_id uuid,
   metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
 );
