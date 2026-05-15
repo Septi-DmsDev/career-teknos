@@ -17,8 +17,23 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Get document record
+  // Verify admin profile
   const adminClient = createAdminSupabaseClient();
+  const { data: adminProfile, error: adminError } = await adminClient
+    .from("admin_profiles")
+    .select("id")
+    .eq("id", user.id)
+    .eq("is_active", true)
+    .single();
+
+  if (adminError || !adminProfile) {
+    return NextResponse.json(
+      { error: "Forbidden" },
+      { status: 403 }
+    );
+  }
+
+  // Get document record
   const { data: doc, error } = await adminClient
     .from("applicant_documents")
     .select("storage_path, file_name, mime_type")
