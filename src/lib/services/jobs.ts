@@ -86,3 +86,103 @@ export async function getJobBySlug(slug: string): Promise<JobDetail | null> {
     benefits: data.benefits,
   };
 }
+
+export async function getDepartments() {
+  if (!hasSupabasePublicEnv()) {
+    return [];
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("departments")
+    .select("id,code,name")
+    .eq("is_active", true)
+    .order("name", { ascending: true });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data;
+}
+
+export async function getAllJobsAdmin(): Promise<JobDetail[]> {
+  if (!hasSupabasePublicEnv()) {
+    return sampleJobs;
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("jobs")
+    .select(
+      "id,title,slug,employment_type,location,deadline,status,description,responsibilities,requirements,benefits,created_at,updated_at,published_at,closed_at,created_by,updated_by,departments(id,code,name)",
+    )
+    .order("created_at", { ascending: false });
+
+  if (error || !data) {
+    return sampleJobs;
+  }
+
+  return data.map((job) => {
+    const department = Array.isArray(job.departments)
+      ? job.departments[0]
+      : job.departments;
+
+    return {
+      id: job.id,
+      slug: job.slug,
+      title: job.title,
+      departmentCode: department?.code ?? "warehouse",
+      departmentName: department?.name ?? "Gudang",
+      employmentType: job.employment_type,
+      location: job.location,
+      deadline: job.deadline,
+      status: job.status,
+      description: job.description,
+      responsibilities: job.responsibilities,
+      requirements: job.requirements,
+      benefits: job.benefits,
+    };
+  });
+}
+
+export async function getJobByIdAdmin(id: string): Promise<JobDetail | null> {
+  const fallback = sampleJobs.find((job) => job.id === id) ?? null;
+
+  if (!hasSupabasePublicEnv()) {
+    return fallback;
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase
+    .from("jobs")
+    .select(
+      "id,title,slug,employment_type,location,deadline,status,description,responsibilities,requirements,benefits,created_at,updated_at,published_at,closed_at,created_by,updated_by,departments(id,code,name)",
+    )
+    .eq("id", id)
+    .single();
+
+  if (error || !data) {
+    return fallback;
+  }
+
+  const department = Array.isArray(data.departments)
+    ? data.departments[0]
+    : data.departments;
+
+  return {
+    id: data.id,
+    slug: data.slug,
+    title: data.title,
+    departmentCode: department?.code ?? "warehouse",
+    departmentName: department?.name ?? "Gudang",
+    employmentType: data.employment_type,
+    location: data.location,
+    deadline: data.deadline,
+    status: data.status,
+    description: data.description,
+    responsibilities: data.responsibilities,
+    requirements: data.requirements,
+    benefits: data.benefits,
+  };
+}
