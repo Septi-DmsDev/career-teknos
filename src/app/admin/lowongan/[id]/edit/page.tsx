@@ -1,4 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { notFound } from "next/navigation";
+
+import { updateJobAction } from "@/app/admin/lowongan/_actions";
+import { JobForm } from "@/components/forms/job-form";
+import { getDepartments, getJobByIdAdmin } from "@/lib/services/jobs";
 
 export default async function EditJobPage({
   params,
@@ -6,18 +10,53 @@ export default async function EditJobPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+  const [job, departments] = await Promise.all([
+    getJobByIdAdmin(id),
+    getDepartments(),
+  ]);
+
+  if (!job) {
+    notFound();
+  }
+
+  // Find the department id from the departments list matching the job's department code
+  const matchedDept = departments.find(
+    (d) => d.code === job.departmentCode,
+  );
+
+  const defaultValues: Record<string, unknown> = {
+    title: job.title,
+    slug: job.slug,
+    departmentId: matchedDept?.id ?? "",
+    employmentType: job.employmentType,
+    location: job.location,
+    deadline: job.deadline ?? "",
+    status: job.status,
+    description: job.description,
+    responsibilities: job.responsibilities,
+    requirements: job.requirements,
+    benefits: job.benefits,
+  };
+
+  const boundAction = updateJobAction.bind(null, id);
 
   return (
-    <div className="max-w-3xl rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-      <p className="text-sm font-semibold text-slate-500">Edit lowongan</p>
-      <h2 className="mt-2 text-2xl font-bold text-slate-950">{id}</h2>
-      <form className="mt-6 grid gap-4">
-        <label className="grid gap-2">
-          <span className="text-sm font-semibold text-slate-800">Judul</span>
-          <input className="h-11 rounded-md border border-slate-200 px-3 text-sm outline-none focus:border-brand focus:ring-2 focus:ring-blue-100" />
-        </label>
-        <Button type="button">Simpan Perubahan</Button>
-      </form>
+    <div className="max-w-3xl">
+      <div className="mb-6">
+        <p className="text-sm font-semibold text-slate-500">Edit Lowongan</p>
+        <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">
+          {job.title}
+        </h2>
+      </div>
+
+      <div className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+        <JobForm
+          departments={departments.map((d) => ({ id: d.id, name: d.name }))}
+          defaultValues={defaultValues}
+          action={boundAction}
+          submitLabel="Simpan Perubahan"
+        />
+      </div>
     </div>
   );
 }

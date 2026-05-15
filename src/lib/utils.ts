@@ -14,6 +14,16 @@ export function slugify(value: string) {
     .replace(/^-+|-+$/g, "");
 }
 
+export function formatDate(value: string | null | undefined, opts?: Intl.DateTimeFormatOptions): string {
+  if (!value) return "-";
+  return new Date(value).toLocaleDateString("id-ID", opts ?? { day: "numeric", month: "long", year: "numeric" });
+}
+
+export function formatCurrency(value: number | null | undefined): string {
+  if (value == null) return "-";
+  return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
+}
+
 export function sanitizeFileName(value: string) {
   const baseName =
     value

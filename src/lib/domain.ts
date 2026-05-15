@@ -63,6 +63,36 @@ export type ApplicantSummary = {
   submittedAt: string;
 };
 
+export const APPLICANT_STATUS_LABELS: Record<ApplicantStatus, string> = {
+  new: "Baru",
+  screening: "Screening",
+  shortlisted: "Shortlisted",
+  interview: "Interview",
+  accepted: "Diterima",
+  rejected: "Ditolak",
+  talent_pool: "Talent Pool",
+};
+
+export const APPLICANT_STATUS_COLORS: Record<ApplicantStatus, string> = {
+  new: "bg-slate-100 text-slate-700",
+  screening: "bg-blue-100 text-blue-700",
+  shortlisted: "bg-yellow-100 text-yellow-700",
+  interview: "bg-purple-100 text-purple-700",
+  accepted: "bg-green-100 text-green-700",
+  rejected: "bg-red-100 text-red-700",
+  talent_pool: "bg-orange-100 text-orange-700",
+};
+
+export const DOCUMENT_TYPE_LABELS: Record<string, string> = {
+  cv: "CV / Resume",
+  ktp: "KTP",
+  ijazah: "Ijazah",
+  transkrip: "Transkrip Nilai",
+  sertifikat: "Sertifikat",
+  foto: "Foto",
+  other: "Dokumen Lain",
+};
+
 export function formatEmploymentType(type: EmploymentType) {
   const labels: Record<EmploymentType, string> = {
     full_time: "Full-time",

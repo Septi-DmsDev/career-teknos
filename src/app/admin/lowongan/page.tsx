@@ -1,9 +1,9 @@
-import { JobCard } from "@/components/public/job-card";
 import { LinkButton } from "@/components/ui/button";
-import { getActiveJobs } from "@/lib/services/jobs";
+import { JobTable } from "@/components/admin/job-table";
+import { getAllJobsAdmin } from "@/lib/services/jobs";
 
 export default async function AdminJobsPage() {
-  const jobs = await getActiveJobs();
+  const jobs = await getAllJobsAdmin();
 
   return (
     <div className="grid gap-6">
@@ -18,10 +18,9 @@ export default async function AdminJobsPage() {
         </div>
         <LinkButton href="/admin/lowongan/tambah">Tambah Lowongan</LinkButton>
       </div>
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {jobs.map((job) => (
-          <JobCard key={job.id} job={job} />
-        ))}
+
+      <div className="overflow-x-auto">
+        <JobTable jobs={jobs} />
       </div>
     </div>
   );
