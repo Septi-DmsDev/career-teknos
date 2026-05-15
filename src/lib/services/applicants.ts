@@ -101,10 +101,8 @@ export async function getApplicants(
 }
 
 export async function getApplicantById(id: string) {
-  const fallback = sampleApplicants.find((a) => a.id === id) ?? null;
-
   if (!hasSupabasePublicEnv()) {
-    return fallback;
+    return null;
   }
 
   const supabase = await createServerSupabaseClient();
@@ -118,7 +116,7 @@ export async function getApplicantById(id: string) {
     .single();
 
   if (error || !data) {
-    return fallback;
+    return null;
   }
 
   return data;
