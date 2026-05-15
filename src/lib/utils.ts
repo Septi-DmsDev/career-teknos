@@ -15,10 +15,16 @@ export function slugify(value: string) {
 }
 
 export function sanitizeFileName(value: string) {
-  const safeName = value
-    .replace(/[\\/]/g, "")
-    .replace(/[^a-zA-Z0-9._-]+/g, "-")
+  const baseName =
+    value
+      .split(/[\\/]/)
+      .filter(Boolean)
+      .at(-1) ?? value;
+  const safeName = baseName
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9._-]/g, "")
     .replace(/-+/g, "-")
+    .replace(/^\.+/g, "")
     .replace(/^-+|-+$/g, "");
 
   return safeName || "document";

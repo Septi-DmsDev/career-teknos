@@ -4,7 +4,7 @@
 
 **Goal:** Build the initial Next.js recruitment app foundation from the approved design spec.
 
-**Architecture:** Single Next.js App Router application with public career routes, admin routes, shared Supabase clients, shared validation schemas, and service modules. This phase creates a working scaffold and placeholders that compile, while keeping data writes behind route handlers.
+**Architecture:** Single Next.js App Router application with public career routes, admin routes, shared Supabase clients, shared validation schemas, and service modules under `src/`. This phase creates a working scaffold and placeholders that compile, while keeping data writes behind route handlers.
 
 **Tech Stack:** Next.js App Router, TypeScript, Tailwind CSS, Zod, React Hook Form, Supabase SSR, Supabase JS, Docker standalone deployment.
 
@@ -18,9 +18,9 @@
 - Create: `tsconfig.json`
 - Create: `eslint.config.mjs`
 - Create: `postcss.config.mjs`
-- Create: `app/layout.tsx`
-- Create: `app/globals.css`
-- Create: `app/(public)/page.tsx`
+- Create: `src/app/layout.tsx`
+- Create: `src/app/globals.css`
+- Create: `src/app/(public)/page.tsx`
 
 - [ ] Generate a Next.js App Router TypeScript project with Tailwind and ESLint.
 - [ ] Preserve existing `docs/` and concept markdown files.
@@ -31,11 +31,11 @@
 ### Task 2: Shared Domain Types and Validation
 
 **Files:**
-- Create: `types/database.ts`
-- Create: `lib/domain.ts`
-- Create: `lib/validations/application.ts`
-- Create: `lib/validations/job.ts`
-- Create: `lib/utils.ts`
+- Create: `src/types/database.ts`
+- Create: `src/lib/domain.ts`
+- Create: `src/lib/validations/application.ts`
+- Create: `src/lib/validations/job.ts`
+- Create: `src/lib/utils.ts`
 
 - [ ] Define MVP enums and lightweight database row types.
 - [ ] Define application form validation, including required CV, KTP, and Ijazah document types.
@@ -46,10 +46,10 @@
 ### Task 3: Supabase Boundary
 
 **Files:**
-- Create: `lib/supabase/client.ts`
-- Create: `lib/supabase/server.ts`
-- Create: `lib/supabase/admin.ts`
-- Create: `middleware.ts`
+- Create: `src/lib/supabase/client.ts`
+- Create: `src/lib/supabase/server.ts`
+- Create: `src/lib/supabase/admin.ts`
+- Create: `src/middleware.ts`
 - Create: `.env.example`
 
 - [ ] Add browser, server, and service-role Supabase clients.
@@ -61,21 +61,21 @@
 ### Task 4: Public and Admin Shell
 
 **Files:**
-- Create: `components/public/*`
-- Create: `components/admin/*`
-- Create: `components/ui/*`
-- Create: `app/(public)/lowongan/page.tsx`
-- Create: `app/(public)/lowongan/[slug]/page.tsx`
-- Create: `app/(public)/lowongan/[slug]/lamar/page.tsx`
-- Create: `app/(public)/lamaran/berhasil/page.tsx`
-- Create: `app/(public)/privacy/page.tsx`
-- Create: `app/admin/login/page.tsx`
-- Create: `app/admin/layout.tsx`
-- Create: `app/admin/dashboard/page.tsx`
-- Create: `app/admin/lowongan/page.tsx`
-- Create: `app/admin/pelamar/page.tsx`
-- Create: `app/admin/export/page.tsx`
-- Create: `app/admin/pengaturan/page.tsx`
+- Create: `src/components/public/*`
+- Create: `src/components/admin/*`
+- Create: `src/components/ui/*`
+- Create: `src/app/(public)/lowongan/page.tsx`
+- Create: `src/app/(public)/lowongan/[slug]/page.tsx`
+- Create: `src/app/(public)/lowongan/[slug]/lamar/page.tsx`
+- Create: `src/app/(public)/lamaran/berhasil/page.tsx`
+- Create: `src/app/(public)/privacy/page.tsx`
+- Create: `src/app/admin/login/page.tsx`
+- Create: `src/app/admin/layout.tsx`
+- Create: `src/app/admin/dashboard/page.tsx`
+- Create: `src/app/admin/lowongan/page.tsx`
+- Create: `src/app/admin/pelamar/page.tsx`
+- Create: `src/app/admin/export/page.tsx`
+- Create: `src/app/admin/pengaturan/page.tsx`
 
 - [ ] Add responsive public shell and job listing placeholders.
 - [ ] Add login page and protected admin layout skeleton.
@@ -85,9 +85,9 @@
 ### Task 5: API and Deployment Foundation
 
 **Files:**
-- Create: `app/api/applications/route.ts`
-- Create: `app/api/documents/[id]/download/route.ts`
-- Create: `app/api/export/applicants/route.ts`
+- Create: `src/app/api/applications/route.ts`
+- Create: `src/app/api/documents/[id]/download/route.ts`
+- Create: `src/app/api/export/applicants/route.ts`
 - Create: `supabase/migrations/001_initial_schema.sql`
 - Create: `supabase/seed.sql`
 - Create: `Dockerfile`
