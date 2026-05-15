@@ -13,49 +13,56 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[];
 
+type Table<Row, Insert, Update = Partial<Insert>> = {
+  Row: Row;
+  Insert: Insert;
+  Update: Update;
+  Relationships: [];
+};
+
 export type Database = {
   public: {
     Tables: {
-      admin_profiles: {
-        Row: {
+      admin_profiles: Table<
+        {
           id: string;
           full_name: string;
           is_active: boolean;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id: string;
           full_name: string;
           is_active?: boolean;
           created_at?: string;
-        };
-        Update: {
+        },
+        {
           full_name?: string;
           is_active?: boolean;
-        };
-      };
-      departments: {
-        Row: {
+        }
+      >;
+      departments: Table<
+        {
           id: string;
           code: DepartmentCode;
           name: string;
           is_active: boolean;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           code: DepartmentCode;
           name: string;
           is_active?: boolean;
           created_at?: string;
-        };
-        Update: {
+        },
+        {
           name?: string;
           is_active?: boolean;
-        };
-      };
-      jobs: {
-        Row: {
+        }
+      >;
+      jobs: Table<
+        {
           id: string;
           title: string;
           slug: string;
@@ -70,8 +77,8 @@ export type Database = {
           deadline: string | null;
           created_at: string;
           updated_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           title: string;
           slug: string;
@@ -86,37 +93,72 @@ export type Database = {
           deadline?: string | null;
           created_at?: string;
           updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["jobs"]["Insert"]>;
-      };
-      applicants: {
-        Row: {
+        }
+      >;
+      applicants: Table<
+        {
           id: string;
           job_id: string;
           full_name: string;
+          birth_place: string | null;
+          birth_date: string | null;
+          gender: string | null;
           email: string;
-          whatsapp: string;
+          whatsapp_number: string;
+          alternative_phone: string | null;
+          domicile_address: string;
+          last_education: string;
+          institution_name: string | null;
+          major: string | null;
+          graduation_year: number | null;
+          work_experience: string | null;
+          skills: string | null;
+          expected_salary: number | null;
+          available_start_date: string | null;
+          source_info: string | null;
+          consent_data_usage: boolean;
           current_status: ApplicantStatus;
-          payload: Json;
           submitted_at: string;
-        };
-        Insert: {
+        },
+        {
           id: string;
           job_id: string;
           full_name: string;
+          birth_place?: string | null;
+          birth_date?: string | null;
+          gender?: string | null;
           email: string;
-          whatsapp: string;
+          whatsapp_number: string;
+          alternative_phone?: string | null;
+          domicile_address: string;
+          last_education: string;
+          institution_name?: string | null;
+          major?: string | null;
+          graduation_year?: number | null;
+          work_experience?: string | null;
+          skills?: string | null;
+          expected_salary?: number | null;
+          available_start_date?: string | null;
+          source_info?: string | null;
+          consent_data_usage?: boolean;
           current_status?: ApplicantStatus;
-          payload: Json;
           submitted_at?: string;
-        };
-        Update: {
+        },
+        {
           current_status?: ApplicantStatus;
-          payload?: Json;
-        };
-      };
-      applicant_documents: {
-        Row: {
+          birth_place?: string | null;
+          birth_date?: string | null;
+          gender?: string | null;
+          alternative_phone?: string | null;
+          work_experience?: string | null;
+          skills?: string | null;
+          expected_salary?: number | null;
+          available_start_date?: string | null;
+          source_info?: string | null;
+        }
+      >;
+      applicant_documents: Table<
+        {
           id: string;
           applicant_id: string;
           document_type: string;
@@ -125,8 +167,8 @@ export type Database = {
           mime_type: string;
           size_bytes: number;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           applicant_id: string;
           document_type: string;
@@ -135,64 +177,79 @@ export type Database = {
           mime_type: string;
           size_bytes: number;
           created_at?: string;
-        };
-        Update: never;
-      };
-      applicant_notes: {
-        Row: {
+        },
+        never
+      >;
+      applicant_notes: Table<
+        {
           id: string;
           applicant_id: string;
           admin_id: string;
           note: string;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           applicant_id: string;
           admin_id: string;
           note: string;
           created_at?: string;
-        };
-        Update: {
+        },
+        {
           note?: string;
-        };
-      };
-      status_histories: {
-        Row: {
+        }
+      >;
+      status_histories: Table<
+        {
           id: string;
           applicant_id: string;
           from_status: ApplicantStatus | null;
           to_status: ApplicantStatus;
-          admin_id: string;
+          admin_id: string | null;
+          note: string | null;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           applicant_id: string;
           from_status?: ApplicantStatus | null;
           to_status: ApplicantStatus;
-          admin_id: string;
+          admin_id?: string | null;
+          note?: string | null;
           created_at?: string;
-        };
-        Update: never;
-      };
-      activity_logs: {
-        Row: {
+        },
+        never
+      >;
+      activity_logs: Table<
+        {
           id: string;
           admin_id: string | null;
           action: string;
           metadata: Json;
           created_at: string;
-        };
-        Insert: {
+        },
+        {
           id?: string;
           admin_id?: string | null;
           action: string;
           metadata?: Json;
           created_at?: string;
-        };
-        Update: never;
+        },
+        never
+      >;
+    };
+    Views: Record<string, never>;
+    Functions: {
+      is_active_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
       };
     };
+    Enums: {
+      job_status: JobStatus;
+      applicant_status: ApplicantStatus;
+      employment_type: EmploymentType;
+    };
+    CompositeTypes: Record<string, never>;
   };
 };
