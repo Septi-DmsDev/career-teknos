@@ -28,6 +28,8 @@ create table public.departments (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   name text not null,
+  slug text not null unique,
+  sort_order integer not null default 0,
   is_active boolean not null default true,
   created_at timestamptz not null default now()
 );
@@ -183,15 +185,15 @@ create policy "admins read own profile"
   on public.admin_profiles for select
   using (id = auth.uid() and is_active = true);
 
-insert into public.departments (code, name)
+insert into public.departments (code, name, slug, sort_order)
 values
-  ('warehouse', 'Gudang'),
-  ('finishing', 'Finishing'),
-  ('design', 'Desain'),
-  ('printing', 'Printing'),
-  ('customer-service', 'Customer Service'),
-  ('logistics-driver', 'Logistik / Driver'),
-  ('offset', 'Offset')
+  ('warehouse',        'Gudang',           'gudang',           1),
+  ('finishing',        'Finishing',        'finishing',        2),
+  ('design',           'Desain',           'desain',           3),
+  ('printing',         'Printing',         'printing',         4),
+  ('customer-service', 'Customer Service', 'customer-service', 5),
+  ('logistics-driver', 'Logistik / Driver','logistik-driver',  6),
+  ('offset',           'Offset',           'offset',           7)
 on conflict (code) do nothing;
 
 -- Create private storage bucket manually or via Supabase dashboard:

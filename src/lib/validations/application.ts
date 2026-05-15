@@ -80,9 +80,12 @@ export const applicationSchema = z.object({
   expectedSalary: z.coerce.number().int().positive().optional(),
   availableDate: z.string().trim().min(1),
   source: z.string().trim().min(2).max(120),
-  consent: z.literal(true, {
-    error: "Persetujuan pengolahan data wajib dicentang.",
-  }),
+  consent: z.preprocess(
+    (v) => v === true || v === "on" || v === "true",
+    z.literal(true, {
+      error: "Persetujuan pengolahan data wajib dicentang.",
+    }),
+  ),
 });
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;
