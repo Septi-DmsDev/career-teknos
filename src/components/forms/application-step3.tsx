@@ -119,6 +119,7 @@ export function ApplicationStep3({
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand underline hover:no-underline"
+              onClick={(e) => e.stopPropagation()}
             >
               kebijakan privasi
             </a>{" "}
