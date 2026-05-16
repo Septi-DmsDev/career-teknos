@@ -24,26 +24,26 @@ export function JobFilter({ jobs }: { jobs: JobSummary[] }) {
 
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 rounded-lg border border-slate-200 bg-white p-4 md:grid-cols-[1fr_auto]">
+      <div className="panel-shadow grid gap-4 rounded-xl border border-line/80 bg-white/90 p-4 backdrop-blur md:grid-cols-[minmax(260px,1fr)_auto]">
         <label className="relative block">
           <span className="sr-only">Cari lowongan</span>
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Cari posisi"
-            className="h-11 w-full rounded-md border border-slate-200 pl-10 pr-3 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-blue-100"
+            className="h-12 w-full rounded-lg border border-line bg-paper/70 pl-10 pr-3 text-sm font-medium outline-none transition focus:border-brand focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </label>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex max-w-3xl flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setDepartment("all")}
             className={cn(
-              "h-11 rounded-md border px-4 text-sm font-semibold transition",
+              "h-12 rounded-lg border px-4 text-sm font-semibold transition",
               department === "all"
-                ? "border-brand bg-brand text-white"
-                : "border-slate-200 bg-white text-slate-600 hover:border-brand/40",
+                ? "border-brand bg-brand text-white shadow-sm"
+                : "border-line bg-white/70 text-slate-600 hover:border-brand/40 hover:text-brand",
             )}
           >
             Semua
@@ -54,10 +54,10 @@ export function JobFilter({ jobs }: { jobs: JobSummary[] }) {
               key={item.code}
               onClick={() => setDepartment(item.code)}
               className={cn(
-                "h-11 rounded-md border px-4 text-sm font-semibold transition",
+                "h-12 rounded-lg border px-4 text-sm font-semibold transition",
                 department === item.code
-                  ? "border-brand bg-brand text-white"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-brand/40",
+                  ? "border-brand bg-brand text-white shadow-sm"
+                  : "border-line bg-white/70 text-slate-600 hover:border-brand/40 hover:text-brand",
               )}
             >
               {item.name}
@@ -73,7 +73,7 @@ export function JobFilter({ jobs }: { jobs: JobSummary[] }) {
           ))}
         </div>
       ) : (
-        <div className="rounded-lg border border-dashed border-slate-300 bg-white p-10 text-center">
+        <div className="rounded-xl border border-dashed border-line bg-white/90 p-10 text-center">
           <h2 className="text-lg font-bold text-slate-950">
             Belum ada lowongan yang cocok
           </h2>

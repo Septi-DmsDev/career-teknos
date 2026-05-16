@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-brand text-white shadow-sm hover:bg-brand-strong focus-visible:outline-brand",
+    "bg-brand text-white shadow-[0_10px_24px_rgba(23,55,87,0.18)] hover:bg-brand-strong focus-visible:outline-brand",
   secondary:
-    "border border-slate-200 bg-white text-slate-900 hover:border-brand/30 hover:text-brand",
-  ghost: "text-slate-700 hover:bg-slate-100 hover:text-slate-950",
+    "border border-line bg-white/90 text-slate-900 shadow-sm hover:border-brand/30 hover:bg-paper hover:text-brand",
+  ghost: "text-slate-700 hover:bg-white/70 hover:text-slate-950",
 };
 
 const sizes = {
@@ -37,7 +37,7 @@ export function buttonClassName({
   className,
 }: Omit<ButtonStyleProps, "children">) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-md font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-60",
+    "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-60",
     variants[variant],
     sizes[size],
     className,

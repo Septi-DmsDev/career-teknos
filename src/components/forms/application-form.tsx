@@ -19,7 +19,6 @@ import { ApplicationStep1 } from "./application-step1";
 import { ApplicationStep2 } from "./application-step2";
 import { ApplicationStep3 } from "./application-step3";
 
-// ─── Custom Zod resolver (no @hookform/resolvers needed) ────────────────────
 const zodResolver: Resolver<ApplicationInput> = async (values) => {
   const result = applicationSchema.safeParse(values);
   if (result.success) {
@@ -37,7 +36,6 @@ const zodResolver: Resolver<ApplicationInput> = async (values) => {
   return { values: {}, errors: fieldErrors };
 };
 
-// ─── Step definitions ────────────────────────────────────────────────────────
 const STEPS = ["Data Diri", "Info Karir", "Dokumen"] as const;
 
 // Fields that belong to each step — used for per-step validation
@@ -60,7 +58,6 @@ const STEP_FIELDS: Array<Array<keyof ApplicationInput>> = [
   ["consent"],
 ];
 
-// ─── Component ───────────────────────────────────────────────────────────────
 export function ApplicationForm({ job }: { job: JobDetail }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -224,9 +221,8 @@ export function ApplicationForm({ job }: { job: JobDetail }) {
   const isLastStep = step === STEPS.length - 1;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      {/* Step indicator */}
-      <div className="flex flex-wrap gap-2">
+    <div className="panel-shadow rounded-2xl border border-line bg-white/90 p-5">
+      <div className="grid gap-3 sm:grid-cols-3">
         {STEPS.map((label, index) => {
           const isActive = step === index;
           const isCompleted = completedSteps.has(index);
@@ -239,15 +235,16 @@ export function ApplicationForm({ job }: { job: JobDetail }) {
               onClick={() => handleStepClick(index)}
               disabled={!isClickable && !isActive}
               className={[
-                "rounded-md border px-3 py-2 text-sm font-semibold transition",
+                "rounded-xl border px-4 py-3 text-left text-sm font-extrabold transition",
                 isActive
-                  ? "border-brand bg-brand text-white"
+                  ? "border-brand bg-brand text-white shadow-sm"
                   : isCompleted
-                    ? "border-brand/40 bg-brand/5 text-brand hover:bg-brand/10"
-                    : "border-slate-200 bg-white text-slate-400 cursor-default",
+                    ? "border-brand/30 bg-brand/5 text-brand hover:bg-brand/10"
+                    : "border-line bg-paper text-slate-400 cursor-default",
               ].join(" ")}
             >
-              {index + 1}. {label}
+              <span className="block text-xs opacity-70">Tahap {index + 1}</span>
+              <span>{label}</span>
             </button>
           );
         })}
@@ -276,8 +273,7 @@ export function ApplicationForm({ job }: { job: JobDetail }) {
           />
         )}
 
-        {/* Navigation */}
-        <div className="flex flex-wrap justify-between gap-3 border-t border-slate-200 pt-5">
+        <div className="flex flex-wrap justify-between gap-3 border-t border-line pt-5">
           <Button
             type="button"
             variant="secondary"
